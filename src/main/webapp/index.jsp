@@ -21,14 +21,15 @@ $(document).ready(function(){
 	
 	
 // 	$('#makeRequestCard').click(function(e){
-// 		OpenPay.card.extractFormAndCreate("openpayForm", function(card){
-// 			console.log(JSON.stringify(card), "a4oelivhkg0ro2spkcvw");
-			$("#card_id").val("kh579vpbgj4f9mmohvru");
+// 		OpenPay.card.extractFormAndCreate("openpayForm", function(response){
+// 			console.log(JSON.stringify(response), "a4oelivhkg0ro2spkcvw");
+// 			$("#card_id").val(response.data.id);
+			$("#card_id").val("kfhuingbanetsuwwx4ad");
 			$('#card_info').css("display","none");
 			$('#payment_info').css("display","inherit");
 // 		}, function(e){
-// 			alert("error:" + JSON.stringify(e)); // yFeT0Q1rh8Wv7RdGP3BqklwgZOp9PtG4
-// 		});
+// 			alert("error:" + JSON.stringify(e));
+// 		}, "a4oelivhkg0ro2spkcvw");
 // 	});
 	
 	$("#makeRequestPay").click(function(e){
