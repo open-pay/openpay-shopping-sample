@@ -21,11 +21,13 @@ $(document).ready(function(){
 	
 	
 // 	$('#makeRequestCard').click(function(e){
+		var customerId = $("#card_customer_id").val();
 // 		OpenPay.card.extractFormAndCreate("openpayForm", function(response){
-// 			console.log(JSON.stringify(response), "a4oelivhkg0ro2spkcvw");
+// 			console.log(JSON.stringify(response), customerId);
 // 			$("#card_id").val(response.data.id);
 			$('#card_info').css("display","none");
 			$('#payment_info').css("display","inherit");
+			$('#customer_id').val(customerId);
 // 		}, function(e){
 // 			alert("error:" + JSON.stringify(e));
 // 		}, "a4oelivhkg0ro2spkcvw");
@@ -46,6 +48,12 @@ $(document).ready(function(){
 <form id="openpayForm" method="post" action="post.jsp">
 <fieldset>
   <legend>Insert Card:</legend>
+  	<div class="tableRow">
+		<div class="tableCell">
+			<p>Customer ID (Should be in the session, added for test purpouses):</p>
+			<input name="card_customer_id" type="text" class="inputText disableOnSubmit" id="card_customer_id" size="50" value="a4oelivhkg0ro2spkcvw"/>
+		</div>
+	</div>
 	<div class="tableRow">
 		<div class="tableCell">
 			<p>Holder Name:</p>
@@ -96,7 +104,7 @@ $(document).ready(function(){
 	<div class="tableRow">
 		<div class="tableCell">
 			<p>Customer ID (Should be in the session, added for test purpouses):</p>
-			<input name="customer_id" type="text" class="inputText disableOnSubmit" id="customer_id" size="50" value="a4oelivhkg0ro2spkcvw"/>
+			<input name="customer_id" type="text" class="inputText disableOnSubmit" id="customer_id" size="50" />
 		</div>
 	</div>
 	<div class="tableRow">
