@@ -40,11 +40,13 @@ public class PaymentServlet extends HttpServlet {
         System.out.println(req.getParameterMap());
         OpenpayAPI api = new OpenpayAPI("https://dev-api.openpay.mx/", "sk_a95d6226f8d44d83b91dd1a6ff40f49b",
                 "mqen65iwlgoittp0ddnl");
+        String customerId = req.getParameter("customer_id");
         String card = req.getParameter("card_id");
         String deviceSessionId = req.getParameter("device_session_id");
         String amountString = req.getParameter("amount");
         String description = req.getParameter("description");
         String result = "Card and amount must be specified";
+
         if (card != null && amountString != null) {
             try {
                 BigDecimal amount = new BigDecimal(amountString);
@@ -55,7 +57,12 @@ public class PaymentServlet extends HttpServlet {
                         .with("device_session_id", deviceSessionId);
                 System.out.println(chargeParamns.asMap());
                 // El Customer deberia estar en la sesion
-                Charge charge = api.charges().create("a4oelivhkg0ro2spkcvw", chargeParamns);
+                Charge charge;
+                if (customerId == null || customerId.isEmpty()) {
+                    charge = api.charges().create(chargeParamns);
+                } else {
+                    charge = api.charges().create(customerId, chargeParamns);
+                }
                 result = charge.toString();
             } catch (IllegalArgumentException e) {
                 System.out.println("The amount '" + amountString + "' is not valid");

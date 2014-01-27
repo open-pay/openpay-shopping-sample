@@ -24,7 +24,6 @@ $(document).ready(function(){
 // 		OpenPay.card.extractFormAndCreate("openpayForm", function(response){
 // 			console.log(JSON.stringify(response), "a4oelivhkg0ro2spkcvw");
 // 			$("#card_id").val(response.data.id);
-			$("#card_id").val("kfhuingbanetsuwwx4ad");
 			$('#card_info').css("display","none");
 			$('#payment_info').css("display","inherit");
 // 		}, function(e){
@@ -90,10 +89,22 @@ $(document).ready(function(){
   <legend>Payment Info</legend>
   	<div class="tableRow">
 		<div class="tableCell">
-			<p>Generated Session Id: <span id="deviceId"></span></p>
+			<p>Generated Device Session Id: <span id="deviceId"></span></p>
 		</div>
 	</div>
-	<input type="hidden" name="card_id" id="card_id" />
+	<!-- The customer ID should actually be in the session, it's inserted here for testing purpouses. -->
+	<div class="tableRow">
+		<div class="tableCell">
+			<p>Customer ID (Should be in the session, added for test purpouses):</p>
+			<input name="customer_id" type="text" class="inputText disableOnSubmit" id="customer_id" size="50" value="a4oelivhkg0ro2spkcvw"/>
+		</div>
+	</div>
+	<div class="tableRow">
+		<div class="tableCell">
+			<p>Card ID (Should not be visible, added for test purpouses):</p>
+			<input name="card_id" type="text" class="inputText disableOnSubmit" id="card_id" size="50" value="kfhuingbanetsuwwx4ad"/>
+		</div>
+	</div>
 	<div class="tableRow">
 		<div class="tableCell">
 			<p>Description:</p>
