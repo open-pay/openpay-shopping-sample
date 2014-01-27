@@ -1,0 +1,41 @@
+@CHARSET "US-ASCII";
+.tableCell {
+	width: 48%;
+	display: table-cell;
+	padding: 10px;
+}
+.tableRow {
+	width: 800px;
+	display: table-row;
+}
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #333;
+	margin-top: 5px;
+	margin-right: 0px;
+	margin-bottom: 8px;
+	margin-left: 0px;
+}
+.table {
+	display: table;
+	width: 800px;
+	padding: 5px;
+	margin: 0px;
+}
+.inputText {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	width: 100%;
+}
+.inputTextarea {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	height: 280px;
+	width: 100%;
+}
+label {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
