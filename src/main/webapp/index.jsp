@@ -6,7 +6,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Buy your stuff</title>
 <link rel="stylesheet" href="style.css" type="text/css" media="all"/>
-<script type='text/javascript' src="http://public.openpay.mx/openpay.v1.js"></script>
+<script type='text/javascript' src="openpay.v1.js"></script> 
+<!-- <script type='text/javascript' src="http://public.openpay.mx/openpay.v1.js"></script> -->
 <!-- Add openpay-data.v1.js after opnepay.v1.js -->
 <script type='text/javascript' src="http://public.openpay.mx/openpay-data.v1.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
@@ -20,18 +21,18 @@ $(document).ready(function(){
 	$('#deviceId').text(deviceDataId);
 	
 	
-// 	$('#makeRequestCard').click(function(e){
+	$('#makeRequestCard').click(function(e){
 		var customerId = $("#card_customer_id").val();
-// 		OpenPay.card.extractFormAndCreate("openpayForm", function(response){
-// 			console.log(JSON.stringify(response), customerId);
-// 			$("#card_id").val(response.data.id);
+		OpenPay.token.extractFormAndCreate("openpayForm", function(response){
+			console.log(JSON.stringify(response), customerId);
+			$("#card_id").val(response.data.id);
 			$('#card_info').css("display","none");
 			$('#payment_info').css("display","inherit");
 			$('#customer_id').val(customerId);
-// 		}, function(e){
-// 			alert("error:" + JSON.stringify(e));
-// 		}, "a4oelivhkg0ro2spkcvw");
-// 	});
+		}, function(e){
+			alert("error:" + JSON.stringify(e));
+		}, "a4oelivhkg0ro2spkcvw");
+	});
 	
 	$("#makeRequestPay").click(function(e){
 		$("#payForm").submit();
@@ -110,7 +111,7 @@ $(document).ready(function(){
 	<div class="tableRow">
 		<div class="tableCell">
 			<p>Card ID (Should not be visible, added for test purpouses):</p>
-			<input name="card_id" type="text" class="inputText disableOnSubmit" id="card_id" size="50" value="kfhuingbanetsuwwx4ad"/>
+			<input name="card_id" type="text" class="inputText disableOnSubmit" id="card_id" size="50"/>
 		</div>
 	</div>
 	<div class="tableRow">
