@@ -1,81 +1,89 @@
-/*
- * COPYRIGHT © 2012-2014. OPENPAY.
- * PATENT PENDING. ALL RIGHTS RESERVED.
- * OPENPAY & OPENCARD IS A REGISTERED TRADEMARK OF OPENCARD INC.
- *
- * This software is confidential and proprietary information of OPENCARD INC.
- * You shall not disclose such Confidential Information and shall use it only
- * in accordance with the company policy.
- */
 package mx.openpay.samples.shopping;
 
-import java.io.IOException;
-import java.math.BigDecimal;
+import mx.openpay.client.Charge;
+import mx.openpay.client.Customer;
+import mx.openpay.client.core.OpenpayAPI;
+import mx.openpay.client.core.requests.transactions.CreateBankChargeParams;
+import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
+import mx.openpay.client.core.requests.transactions.CreateStoreChargeParams;
+import mx.openpay.client.exceptions.OpenpayServiceException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.math.BigDecimal;
 
-import mx.openpay.client.Charge;
-import mx.openpay.client.core.OpenpayAPI;
-import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
-import mx.openpay.client.exceptions.OpenpayServiceException;
-import mx.openpay.client.exceptions.ServiceUnavailableException;
-
-/**
- * @author Eli Lopez, eli.lopez@opencard.mx
- */
 public class PaymentServlet extends HttpServlet {
 
     private static final long serialVersionUID = 7766498695687858421L;
 
-    /**
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
-     */
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException,
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
             IOException {
-        System.out.println(req.getParameterMap());
-        OpenpayAPI api = new OpenpayAPI("https://dev-api.openpay.mx/", "sk_a95d6226f8d44d83b91dd1a6ff40f49b",
-                "mqen65iwlgoittp0ddnl");
-        String customerId = req.getParameter("customer_id");
-        String card = req.getParameter("card_id");
-        String deviceSessionId = req.getParameter("device_session_id");
-        String amountString = req.getParameter("amount");
-        String description = req.getParameter("description");
-        String result = "Card and amount must be specified";
+        System.out.println(request.getParameterMap());
+        OpenpayAPI openpayAPI = new OpenpayAPI("https://sandbox-api.openpay.mx/", "sk_e568c42a6c384b7ab02cd47d2e407cab",
+                "mzdtln0bmtms6o3kck8f");
 
-        if (card != null && amountString != null) {
-            try {
-                BigDecimal amount = new BigDecimal(amountString);
-                CreateCardChargeParams chargeParamns = new CreateCardChargeParams()
-                        .amount(amount)
-                        .cardId(card)
-                        .description(description)
-                        .with("device_session_id", deviceSessionId);
-                System.out.println(chargeParamns.asMap());
-                // El Customer deberia estar en la sesion
-                Charge charge;
-                if (customerId == null || customerId.isEmpty()) {
-                    charge = api.charges().create(chargeParamns);
-                } else {
-                    charge = api.charges().create(customerId, chargeParamns);
-                }
-                result = charge.toString();
-            } catch (IllegalArgumentException e) {
-                System.out.println("The amount '" + amountString + "' is not valid");
-                result = "Amount is not valid";
-            } catch (OpenpayServiceException e) {
-                e.printStackTrace();
-                result = e.getDescription();
-            } catch (ServiceUnavailableException e) {
-                e.printStackTrace();
-                result = "Can't connect to Openpay";
+        ServletContext context = request.getSession().getServletContext();
+
+        String idProduct = request.getParameter("id_product");
+
+        String customerName = request.getParameter("name");
+        String customerEmail = request.getParameter("email");
+        String customerPhone = request.getParameter("phone");
+
+        String paymentTypme = request.getParameter("payment_type");
+        String tokenId = request.getParameter("token_id");
+
+        Product product = ProductBusiness.getById(context.getRealPath("/"), idProduct);
+        String amountString = product.getPrice().replace(",", "").replace("$", "");
+        String description = product.getName();
+        BigDecimal amount = new BigDecimal(amountString);
+
+        try {
+            Customer customer = openpayAPI.customers().create(new Customer()
+                    .name(customerName)
+                    .email(customerEmail)
+                    .phoneNumber(customerPhone));
+
+            Charge charge = null;
+            switch (paymentTypme) {
+                case "card":
+                    if (tokenId == null) {
+                        throw new IllegalStateException("This payment requires the token-id");
+                    }
+                    CreateCardChargeParams cardChargeParams = new CreateCardChargeParams()
+                            .cardId(tokenId)
+                            .amount(amount)
+                            .description(description);
+                    charge = openpayAPI.charges().create(customer.getId(), cardChargeParams);
+                    break;
+                case "store":
+                    CreateStoreChargeParams storeChargeParams = new CreateStoreChargeParams()
+                            .amount(amount)
+                            .description(description);
+                    charge = openpayAPI.charges().create(customer.getId(), storeChargeParams);
+                    break;
+                case "bank":
+                    CreateBankChargeParams createBankChargeParams = new CreateBankChargeParams()
+                            .amount(amount)
+                            .description(description);
+                    charge = openpayAPI.charges().create(customer.getId(), createBankChargeParams);
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported payment type: " + paymentTypme);
             }
+            request.getSession().setAttribute("charge", charge);
+            request.getSession().setAttribute("customer", customer);
+            request.getSession().setAttribute("product", product);
+        } catch (OpenpayServiceException e) {
+            throw new ServletException(e.getMessage(), e);
+        } catch (mx.openpay.client.exceptions.ServiceUnavailableException e) {
+            throw new ServletException(e.getMessage(), e);
         }
-        req.getSession().setAttribute("result", result);
-        resp.sendRedirect("result.jsp");
+        response.sendRedirect("confirmation.jsp");
     }
 }

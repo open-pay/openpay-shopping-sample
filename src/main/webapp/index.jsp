@@ -1,136 +1,63 @@
-<%@ page language="java" contentType="text/html; charset=US-ASCII"
-    pageEncoding="US-ASCII"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<%@ page import="mx.openpay.samples.shopping.Product" %>
+<%@ page import="mx.openpay.samples.shopping.ProductBusiness" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Buy your stuff</title>
-<link rel="stylesheet" href="style.css" type="text/css" media="all"/>
-<script type='text/javascript' src="openpay.v1.js"></script> 
-<!-- <script type='text/javascript' src="http://public.openpay.mx/openpay.v1.js"></script> -->
-<!-- Add openpay-data.v1.js after opnepay.v1.js -->
-<script type='text/javascript' src="http://public.openpay.mx/openpay-data.v1.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-	OpenPay.setId("mqen65iwlgoittp0ddnl");
-	OpenPay.setApiKey("pk_06085f25ac8343d4afa1628e46667c68");
-	OpenPay.setDevelopMode(true);
-	// Setup Form after calling setSandboxMode or setDevelopMode.
-	var deviceDataId = OpenPay.deviceData.setup("payForm", "device_session_id");
-	$('#deviceId').text(deviceDataId);
-	
-	
-	$('#makeRequestCard').click(function(e){
-		var customerId = $("#card_customer_id").val();
-		OpenPay.token.extractFormAndCreate("openpayForm", function(response){
-			console.log(JSON.stringify(response), customerId);
-			$("#card_id").val(response.data.id);
-			$('#card_info').css("display","none");
-			$('#payment_info').css("display","inherit");
-			$('#customer_id').val(customerId);
-		}, function(e){
-			alert("error:" + JSON.stringify(e));
-		}, "a4oelivhkg0ro2spkcvw");
-	});
-	
-	$("#makeRequestPay").click(function(e){
-		$("#payForm").submit();
-	});
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mi tienda</title>
 
-});
-</script>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/sticky-footer-navbar.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
-<body>
+<body role="document">
+<jsp:include page="nav-bar.jsp"/>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
 
-
-<!--  Por el momento no registrar tarjeta -->
-<div  class="table" id="card_info" >
-<form id="openpayForm" method="post" action="post.jsp">
-<fieldset>
-  <legend>Insert Card:</legend>
-  	<div class="tableRow">
-		<div class="tableCell">
-			<p>Customer ID (Should be in the session, added for test purpouses):</p>
-			<input name="card_customer_id" type="text" class="inputText disableOnSubmit" id="card_customer_id" size="50" value="a4oelivhkg0ro2spkcvw"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Holder Name:</p>
-			<input name="holder_name" type="text" class="inputText disableOnSubmit" id="holderName" size="50" data-openpay-card="holder_name"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Card Number:</p>
-			<input name="card_number" type="text" class="inputText disableOnSubmit" id="cardNumber" size="50" data-openpay-card="card_number"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Expiration Year:</p>
-			<input name="expiration_year" type="text" class="inputText disableOnSubmit" id="expirationYear" size="50" data-openpay-card="expiration_year"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Expiration Month:</p>
-			<input name="expiration_month" type="text" class="inputText disableOnSubmit" id="expirationMonth" size="50" data-openpay-card="expiration_month"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>CVV2:</p>
-			<input name="cvv2" type="text" class="inputText disableOnSubmit" id="cvv2" size="50" data-openpay-card="cvv2"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<input type="button" class="disableOnSubmit" id="makeRequestCard" value="Registrar tarjeta">
-	</div>
-</fieldset>
-</form>
+            <div class="row">
+            <% int number = 0;
+              for (Product product : ProductBusiness.getProducts(getServletContext().getRealPath("/"))) { %>
+                <% if (number % 3 == 0) { %>
+                    </div><div class="row">
+                <% }%>
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <img alt="<%=product.getName()%>" src="img/products/<%=product.getImageUrlList()%>" />
+                            <div class="caption">
+                                <h3>
+                                    <%=product.getName()%>
+                                </h3>
+                                <p><%=product.getShortDescription()%></p>
+                                <h3 class="text-center"><%=product.getPrice()%></h3>
+                                <div class="span7 text-center">
+                                    <a class="btn btn-primary" href="product-detail.jsp?id=<%=product.getId()%>">Comprar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            <%  number++;
+                } %>
+            </div>
+        </div>
+    </div>
 </div>
+<jsp:include page="footer.jsp"/>
 
-<div class="table" id="payment_info" style="display:none">
-<form id="payForm" method="post" action="post.jsp">
-<fieldset>
-  <legend>Payment Info</legend>
-  	<div class="tableRow">
-		<div class="tableCell">
-			<p>Generated Device Session Id: <span id="deviceId"></span></p>
-		</div>
-	</div>
-	<!-- The customer ID should actually be in the session, it's inserted here for testing purpouses. -->
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Customer ID (Should be in the session, added for test purpouses):</p>
-			<input name="customer_id" type="text" class="inputText disableOnSubmit" id="customer_id" size="50" />
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Card ID (Should not be visible, added for test purpouses):</p>
-			<input name="card_id" type="text" class="inputText disableOnSubmit" id="card_id" size="50"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Description:</p>
-			<input name="description" type="text" class="inputText disableOnSubmit" id="description" size="50"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<div class="tableCell">
-			<p>Amount:</p>
-			<input name="amount" type="text" class="inputText disableOnSubmit" id="amount" size="50"/>
-		</div>
-	</div>
-	<div class="tableRow">
-		<input type="button" class="disableOnSubmit" id="makeRequestPay" value="Realizar Compra">
-	</div>
-</fieldset>
-</form>
-</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
