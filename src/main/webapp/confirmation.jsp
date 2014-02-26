@@ -116,8 +116,46 @@
                                         <%=product.getPrice()%>
                                     </td>
                                 </tr>
+                                <% if (charge.getMethod().equals("card")) {%>
+	                           	<tr>
+                                    <td>
+                                        Terminación tarjeta
+                                    </td>
+                                    <td>
+                                        <%=charge.getCard().getCardNumber()%>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Tipo de tarjeta
+                                    </td>
+                                    <td>
+                                        <%=charge.getCard().getType().toUpperCase()%>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Banco
+                                    </td>
+                                    <td>
+                                        <%=charge.getCard().getBankName().toUpperCase()%>
+                                    </td>
+                                </tr>
+	                            <% } %>
                                 </tbody>
                             </table>
+                            
+                            <% if (charge.getMethod().equals("card")) {%>
+                            <div class="row">
+                                    <div class="form-group col-xs-6">
+		                            	<img class="img center-block"
+		                                     src="img/icono.gif"/>
+		                            </div>
+		                            <div class="form-group col-xs-6">
+		                            	<h3>Tu pedido será enviando dentro de las próximas 24 horas.</h3>
+		                            </div>
+		                    </div>
+                            <% } %>
 
                             <% if (charge.getMethod().equals("store")) {%>
                                 <p>Sigue lo siguientes paso para realizar tu pago:</p>
@@ -223,9 +261,7 @@
                             <% } %>
 
                             <h5 class="text-center">
-                                Hemos envíamos toda la información de tu orden a <p
-                                    class="text-primary"><%=customer.getEmail()%>
-                            </p>
+                                Hemos envíamos toda la información de tu orden a <p class="text-primary"><%=customer.getEmail()%></p>
                             </h5>
                         </div>
                     </div>
