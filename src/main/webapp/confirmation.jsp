@@ -14,10 +14,11 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-select.min.css" rel="stylesheet">
     <link href="css/sticky-footer-navbar.css" rel="stylesheet">
-
+	<link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+    <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay-bitcoin.v1.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-select.min.js"></script>
@@ -29,25 +30,41 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+	<%
+        Product product = (Product) request.getSession().getAttribute("product");
+        Charge charge = (Charge) request.getSession().getAttribute("charge");
+        Customer customer = (Customer) request.getSession().getAttribute("customer");
+    %>
+    
     <script type="text/javascript">
         $(document).ready(function () {
-
+        	OpenPayBitcoin.setId("${merchantId}");
+        	OpenPayBitcoin.setDevelopMode(true);
+			var transactionId =  '<%= charge.getId() %>';
+        	OpenPayBitcoin.setupIframe('bitcoin_div', transactionId, function(status){
+        		console.log("Status set to: " + status);
+        		if(status == 'completed'){
+        			$(".bitcoinHide").addClass("hidden");
+        			$(".bitcoinPaid").removeClass("hidden");
+        		}
+        	});
         });
     </script>
-
+	<style type="text/css">
+		#bitcoin_div {
+			text-align: center;
+		}
+		#bitcoin_div iframe {
+			margin: 0 auto;
+			display: block;
+		}
+	</style>
 </head>
 <body role="document">
 <jsp:include page="nav-bar.jsp"/>
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <%
-                Product product = (Product) request.getSession().getAttribute("product");
-                Charge charge = (Charge) request.getSession().getAttribute("charge");
-                Customer customer = (Customer) request.getSession().getAttribute("customer");
-            %>
-
              <!-- PRODUCT -->
             <div class="col-md-6 column">
                 <div class="panel panel-default">
@@ -94,7 +111,7 @@
                                     </td>
                                 </tr>
                                 <% } %>
-                                <% if (charge.getPaymentMethod() != null) {%>
+                                <% if (charge.getPaymentMethod() != null && !charge.getMethod().equals("bitcoin")) {%>
                                 <tr>
                                     <td>
                                         Referencia
@@ -102,7 +119,7 @@
                                     <td>
                                         <% if (charge.getPaymentMethod().getReference() != null) {%>
                                             <%=charge.getPaymentMethod().getReference()%>
-                                       <%} else {%>
+                                      <%} else {%>
                                          <%=charge.getPaymentMethod().getName()%>
                                       <%}%>
                                     </td>
@@ -152,7 +169,7 @@
 		                                     src="img/icono.gif"/>
 		                            </div>
 		                            <div class="form-group col-xs-6">
-		                            	<h3>Tu pedido será enviando dentro de las próximas 24 horas.</h3>
+		                            	<h3>Tu pedido será enviado dentro de las próximas 24 horas.</h3>
 		                            </div>
 		                    </div>
                             <% } %>
@@ -258,6 +275,20 @@
                                         Guarda tu comprobante de pago
                                     </li>
                                 </ol>
+                            <% } %>
+                            
+                              <% if (charge.getMethod().equals("bitcoin")) {%>
+                              	<div class="row bitcoinPaid hidden">
+                                    <div class="form-group col-xs-6">
+		                            	<img class="img center-block"
+		                                     src="img/icono.gif"/>
+		                            </div>
+		                            <div class="form-group col-xs-6">
+		                            	<h3>Tu pedido será enviado dentro de las próximas 24 horas.</h3>
+		                            </div>
+		                    	</div>
+                                <p class="bitcoinHide">Utiliza los siguientes datos para realizar tu pago:</p>
+                                <div id="bitcoin_div" class="bitcoinHide"><i class="fa fa-spinner fa-pulse text-primary fa-3x"></i><br>Cargando...</div>
                             <% } %>
 
                             <h5 class="text-center">

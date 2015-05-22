@@ -1,20 +1,22 @@
 package mx.openpay.samples.shopping;
 
-import mx.openpay.client.Charge;
-import mx.openpay.client.Customer;
-import mx.openpay.client.core.OpenpayAPI;
-import mx.openpay.client.core.requests.transactions.CreateBankChargeParams;
-import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
-import mx.openpay.client.core.requests.transactions.CreateStoreChargeParams;
-import mx.openpay.client.exceptions.OpenpayServiceException;
+import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.math.BigDecimal;
+
+import mx.openpay.client.Charge;
+import mx.openpay.client.Customer;
+import mx.openpay.client.core.OpenpayAPI;
+import mx.openpay.client.core.requests.transactions.CreateBankChargeParams;
+import mx.openpay.client.core.requests.transactions.CreateBitcoinChargeParams;
+import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
+import mx.openpay.client.core.requests.transactions.CreateStoreChargeParams;
+import mx.openpay.client.exceptions.OpenpayServiceException;
 
 public class PaymentServlet extends HttpServlet {
 
@@ -24,8 +26,9 @@ public class PaymentServlet extends HttpServlet {
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
             IOException {
         System.out.println(request.getParameterMap());
-        OpenpayAPI openpayAPI = new OpenpayAPI("https://sandbox-api.openpay.mx/", "sk_e568c42a6c384b7ab02cd47d2e407cab",
-                "mzdtln0bmtms6o3kck8f");
+        String merchantId = "miklpzr4nsvsucghm2qp";
+        OpenpayAPI openpayAPI = new OpenpayAPI("https://dev-api.openpay.mx/", "sk_08453429e4c54220a3a82ab4d974c31a",
+                merchantId);
 
         ServletContext context = request.getSession().getServletContext();
 
@@ -73,12 +76,19 @@ public class PaymentServlet extends HttpServlet {
                             .description(description);
                     charge = openpayAPI.charges().create(customer.getId(), createBankChargeParams);
                     break;
+                case "bitcoin":
+                    CreateBitcoinChargeParams createBitcoinChargeParams = new CreateBitcoinChargeParams()
+                    .amount(amount)
+                    .description(description);
+                    charge = openpayAPI.charges().create(customer.getId(), createBitcoinChargeParams);
+            break;
                 default:
                     throw new IllegalStateException("Unsupported payment type: " + paymentTypme);
             }
             request.getSession().setAttribute("charge", charge);
             request.getSession().setAttribute("customer", customer);
             request.getSession().setAttribute("product", product);
+            request.getSession().setAttribute("merchantId", merchantId);
         } catch (OpenpayServiceException e) {
             throw new ServletException(e.getMessage(), e);
         } catch (mx.openpay.client.exceptions.ServiceUnavailableException e) {
