@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,7 +29,7 @@ public class ProductBusiness {
         for (File productFile : files) {
             try {
                 Properties properties = new Properties();
-                properties.load(new FileInputStream(productFile));
+                properties.load(new InputStreamReader(new FileInputStream(productFile), "UTF-8"));
                 Product product = new Product();
                 product.setId(String.valueOf(id++));
                 product.setName(properties.getProperty("name"));
