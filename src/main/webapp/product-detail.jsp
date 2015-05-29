@@ -31,9 +31,9 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            OpenPay.setId('miklpzr4nsvsucghm2qp');
-            OpenPay.setApiKey('pk_7120df1f59ec4c7f870e46a7dc23c25e');
-            OpenPay.setDevelopMode(true);
+            OpenPay.setId('mzdtln0bmtms6o3kck8f');
+            OpenPay.setApiKey('pk_f0660ad5a39f4912872e24a7a660370c');
+            OpenPay.setSandboxMode(true);
 
             $("#card-error").hide();
 

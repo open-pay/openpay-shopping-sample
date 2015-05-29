@@ -18,10 +18,11 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
-    <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay-bitcoin.v1.js"></script>
+<!--     <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay-bitcoin.v1.js"></script> -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-select.min.js"></script>
+    <script src="js/openpay-bitcoin.v1.js"></script>
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -39,7 +40,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
         	OpenPayBitcoin.setId("${merchantId}");
-        	OpenPayBitcoin.setDevelopMode(true);
+        	OpenPayBitcoin.setSandboxMode(true);
 			var transactionId =  '<%= charge.getId() %>';
         	OpenPayBitcoin.setupIframe('bitcoin_div', transactionId, function(status){
         		console.log("Status set to: " + status);
