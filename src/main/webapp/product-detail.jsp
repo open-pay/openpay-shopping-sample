@@ -40,8 +40,22 @@
             var success_callbak = function (response) {
                 var token_id = response.data.id;
                 $('#token_id').val(token_id);
-                $('#form-payment').submit();
+                if (response.data.card.points_card) {
+                	$("#cardPointsModal").modal("show");
+                } else {
+                	$('#form-payment').submit();
+                }
             };
+            
+            $("#yesCardPoints").on('click', function(){
+            	$('#use_card_points').val('true');
+            	$('#form-payment').submit();
+            });
+            
+            $("#noCardPoints").on('click', function(){
+            	$('#use_card_points').val('false');
+            	$('#form-payment').submit();
+            });
 
             var error_callbak = function (response) {
                 var desc = response.data.description != undefined ? response.data.description : response.message;
@@ -80,7 +94,25 @@
 <jsp:include page="nav-bar.jsp"/>
 <div class="container">
     <% Product product = ProductBusiness.getById(getServletContext().getRealPath("/"), request.getParameter("id")); %>
-
+	
+	<div class="modal fade" role="dialog" id="cardPointsModal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Usar Puntos</h4>
+				</div>
+				<div class="modal-body">
+					<p>¿Desea usar los puntos de su tarjeta para este pago?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="noCardPoints">No</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="yesCardPoints">Si</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
     <div class="col-md-6 column">
         <div class="panel panel-default">
             <div class="panel-heading"><h3 class="text-danger text-center">
@@ -106,6 +138,7 @@
     <div class="col-md-6 column">
         <form role="form" id="form-payment" method="POST" action="doPayment">
             <input type="hidden" id="token_id" name="token_id"/>
+            <input type="hidden" id="use_card_points" name="use_card_points" value="false"/>
             <input type="hidden" id="id_product" name="id_product" value="<%=request.getParameter("id")%>"/>
             <input type="hidden" id="payment_type" name="payment_type" value="card"/>
 

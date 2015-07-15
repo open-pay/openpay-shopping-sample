@@ -40,6 +40,7 @@ public class PaymentServlet extends HttpServlet {
 
         String paymentTypme = request.getParameter("payment_type");
         String tokenId = request.getParameter("token_id");
+        boolean useCardPoints = Boolean.parseBoolean(request.getParameter("use_card_points"));
 
         Product product = ProductBusiness.getById(context.getRealPath("/"), idProduct);
         String amountString = product.getPrice().replace(",", "").replace("$", "");
@@ -61,7 +62,8 @@ public class PaymentServlet extends HttpServlet {
                     CreateCardChargeParams cardChargeParams = new CreateCardChargeParams()
                             .cardId(tokenId)
                             .amount(amount)
-                            .description(description);
+                            .description(description)
+                            .with("use_card_points", useCardPoints);
                     charge = openpayAPI.charges().create(customer.getId(), cardChargeParams);
                     break;
                 case "store":
