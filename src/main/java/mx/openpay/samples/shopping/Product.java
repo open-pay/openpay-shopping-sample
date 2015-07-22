@@ -1,5 +1,6 @@
 package mx.openpay.samples.shopping;
 
+import java.math.BigDecimal;
 
 public class Product {
 
@@ -18,58 +19,65 @@ public class Product {
     private String longDescription;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     public String getImageUrlList() {
-        return imageUrlList;
+        return this.imageUrlList;
     }
 
-    public void setImageUrlList(String imageUrlList) {
+    public void setImageUrlList(final String imageUrlList) {
         this.imageUrlList = imageUrlList;
     }
 
     public String getImageUrlDetail() {
-        return imageUrlDetail;
+        return this.imageUrlDetail;
     }
 
-    public void setImageUrlDetail(String imageUrlDetail) {
+    public void setImageUrlDetail(final String imageUrlDetail) {
         this.imageUrlDetail = imageUrlDetail;
     }
 
     public String getPrice() {
-        return price;
+        return this.price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(final String price) {
         this.price = price;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
+    public BigDecimal getPriceAsBigDecimal() {
+        if (this.price == null) {
+            return null;
+        }
+        return new BigDecimal(this.price.replace(",", "").replace("$", ""));
     }
 
-    public void setShortDescription(String shortDescription) {
+    public String getShortDescription() {
+        return this.shortDescription;
+    }
+
+    public void setShortDescription(final String shortDescription) {
         this.shortDescription = shortDescription;
     }
 
     public String getLongDescription() {
-        return longDescription;
+        return this.longDescription;
     }
 
-    public void setLongDescription(String longDescription) {
+    public void setLongDescription(final String longDescription) {
         this.longDescription = longDescription;
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 }
