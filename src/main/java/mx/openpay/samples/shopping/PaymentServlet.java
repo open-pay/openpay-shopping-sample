@@ -63,7 +63,7 @@ public class PaymentServlet extends HttpServlet {
                             .cardId(tokenId)
                             .amount(amount)
                             .description(description)
-                            .with("use_card_points", useCardPoints);
+                            .useCardPoints(useCardPoints);
                     charge = openpayAPI.charges().create(customer.getId(), cardChargeParams);
                     break;
                 case "store":

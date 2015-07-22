@@ -159,6 +159,39 @@
                                         <%=charge.getCard().getBankName().toUpperCase()%>
                                     </td>
                                 </tr>
+	                                <% if (charge.getCardPoints() != null) {%>
+	                                <tr>
+	                                    <td>
+	                                        Pagado con puntos
+	                                    </td>
+	                                    <td>
+	                                       $<%=charge.getCardPoints().getAmount().toPlainString()%>
+	                                    </td>
+	                                </tr>
+                                	 <tr>
+	                                    <td>
+	                                        Puntos usados
+	                                    </td>
+	                                    <td>
+	                                        <%=charge.getCardPoints().getUsed().toPlainString()%>
+	                                    </td>
+	                                </tr>
+	                                <tr>
+	                                    <td>
+	                                        Puntos restantes
+	                                    </td>
+	                                    <td>
+	                                        <%=charge.getCardPoints().getRemaining().toPlainString()%>
+	                                    </td>
+	                                </tr>
+		                                <% if (charge.getCardPoints().getCaption() != null && !charge.getCardPoints().getCaption().isEmpty()) {%>
+		                                 <tr>
+		                                    <td colspan="2">
+		                                        <%=charge.getCardPoints().getCaption()%>
+		                                    </td>
+		                                </tr>
+			                            <% } %>
+		                            <% } %>
 	                            <% } %>
                                 </tbody>
                             </table>

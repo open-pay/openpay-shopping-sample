@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>mx.openpay</groupId>
 			<artifactId>openpay-api-client</artifactId>
-			<version>1.0.5-SNAPSHOT</version>
+			<version>1.0.5</version>
 		</dependency>
 	</dependencies>
 
