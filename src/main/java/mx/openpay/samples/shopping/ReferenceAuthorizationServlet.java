@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,16 +55,18 @@ public class ReferenceAuthorizationServlet extends HttpServlet {
         if (this.isValidAuthorization(request)) {
             String body = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding() == null ? "UTF-8"
                     : request.getCharacterEncoding());
-            String amount = this.getAmount(body);
+            System.out.println("Received body:");
+            System.out.println(body);
+            Map<String, String> map = this.getStringMap(body);
+            String amount = map.get("amount");
             StringBuilder responseBody = new StringBuilder();
             ServletContext context = request.getSession().getServletContext();
+            response.setStatus(200);
             if (ProductBusiness.existsProductWithPrice(context.getRealPath("/"), new BigDecimal(amount))) {
-                response.setStatus(200);
                 responseBody.append("{\"authorization_number\":\"").append(System.currentTimeMillis() % 1000000)
-                        .append("\",\"response_code\":1}");
+                        .append("\",\"response_code\":0}");
             } else {
-                response.setStatus(200);
-                responseBody.append("{\"authorization_number\":\"\",\"response_code\":0}");
+                responseBody.append("{\"response_code\":12}");
             }
             IOUtils.write(responseBody.toString().getBytes("UTF-8"), response.getOutputStream());
             response.setContentType("application/json; charset=UTF-8");
@@ -73,15 +77,40 @@ public class ReferenceAuthorizationServlet extends HttpServlet {
         }
     }
 
-    private String getAmount(final String body) throws JsonSyntaxException {
-        Type type = new TypeToken<LinkedTreeMap<String, String>>() {
-        }.getType();
-        LinkedTreeMap<String, String> map = this.gson.fromJson(body, type);
-        String amount = map.get("amount");
-        return amount;
+    @Override
+    protected void doDelete(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException {
+        if (this.isValidAuthorization(request)) {
+            String requestURL = request.getRequestURL().toString();
+            System.out.println("URL: " + requestURL);
+            String folio = request.getParameter("folio");
+            System.out.println("Folio: " + folio);
+            String authorizationNumber = request.getParameter("authorization_number");
+            System.out.println("Auth: " + authorizationNumber);
+            String localDate = request.getParameter("local_date");
+            System.out.println("Date: " + localDate);
+            String amount = request.getParameter("amount");
+            System.out.println("Amount: " + amount);
+            String trx_no = request.getParameter("trx_no");
+            System.out.println("Trx: " + trx_no);
+            response.setStatus(200);
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+        } else {
+            response.sendError(HttpStatus.SC_FORBIDDEN, "Authentication failed");
+        }
     }
 
     private boolean isValidAuthorization(final HttpServletRequest request) {
+        System.out.println("AUTH: " + request.getHeader("Authorization"));
         return EXPECTED_AUTH.equals(request.getHeader("Authorization"));
     }
+
+    private Map<String, String> getStringMap(final String body) throws JsonSyntaxException {
+        Type type = new TypeToken<LinkedTreeMap<String, String>>() {
+        }.getType();
+        LinkedTreeMap<String, String> map = this.gson.fromJson(body, type);
+        return map;
+    }
+
 }

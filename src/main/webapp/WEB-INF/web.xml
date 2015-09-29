@@ -18,6 +18,10 @@
 		<servlet-name>auth</servlet-name>
 		<url-pattern>/paynet/merchant-authorizer/v1/reference</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>auth</servlet-name>
+		<url-pattern>/paynet/merchant-authorizer/v1/reference/*</url-pattern>
+	</servlet-mapping>
 	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
