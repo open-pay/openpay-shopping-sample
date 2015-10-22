@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -37,6 +38,8 @@ public class ReferenceAuthorizationServlet extends HttpServlet {
     private static final String PASSWORD = "testing";
 
     private static final String EXPECTED_AUTH;
+
+    private static final String LONG_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
     static {
         try {
@@ -80,6 +83,7 @@ public class ReferenceAuthorizationServlet extends HttpServlet {
     @Override
     protected void doDelete(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
+
         if (this.isValidAuthorization(request)) {
             String requestURL = request.getRequestURL().toString();
             System.out.println("URL: " + requestURL);
@@ -89,13 +93,18 @@ public class ReferenceAuthorizationServlet extends HttpServlet {
             System.out.println("Auth: " + authorizationNumber);
             String localDate = request.getParameter("local_date");
             System.out.println("Date: " + localDate);
-            String amount = request.getParameter("amount");
-            System.out.println("Amount: " + amount);
-            String trx_no = request.getParameter("trx_no");
-            System.out.println("Trx: " + trx_no);
-            response.setStatus(200);
-            response.getOutputStream().flush();
-            response.getOutputStream().close();
+            try {
+                System.out.println(new SimpleDateFormat(LONG_DATE_FORMAT).parse(localDate));
+                String amount = request.getParameter("amount");
+                System.out.println("Amount: " + amount);
+                String trx_no = request.getParameter("trx_no");
+                System.out.println("Trx: " + trx_no);
+                response.setStatus(200);
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
+            } catch (ParseException e) {
+                response.sendError(HttpStatus.SC_BAD_REQUEST, "Date '" + localDate + "' not allowed: " + e.getMessage());
+            }
         } else {
             response.sendError(HttpStatus.SC_FORBIDDEN, "Authentication failed");
         }
