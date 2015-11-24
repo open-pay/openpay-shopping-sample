@@ -13,7 +13,6 @@ import mx.openpay.client.Charge;
 import mx.openpay.client.Customer;
 import mx.openpay.client.core.OpenpayAPI;
 import mx.openpay.client.core.requests.transactions.CreateBankChargeParams;
-import mx.openpay.client.core.requests.transactions.CreateBitcoinChargeParams;
 import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
 import mx.openpay.client.core.requests.transactions.CreateStoreChargeParams;
 import mx.openpay.client.exceptions.OpenpayServiceException;
@@ -80,12 +79,6 @@ public class PaymentServlet extends HttpServlet {
                             .description(description);
                     charge = openpayAPI.charges().create(customer.getId(), createBankChargeParams);
                     break;
-                case "bitcoin":
-                    CreateBitcoinChargeParams createBitcoinChargeParams = new CreateBitcoinChargeParams()
-                    .amount(amount)
-                    .description(description);
-                    charge = openpayAPI.charges().create(customer.getId(), createBitcoinChargeParams);
-            break;
                 default:
                     throw new IllegalStateException("Unsupported payment type: " + paymentTypme);
             }

@@ -82,10 +82,7 @@
                 } else if(bankClassValue.indexOf("active") >= 0){
                     $('#payment_type').val("bank");
                     $('#form-payment').submit();
-                } else {
-                	$('#payment_type').val("bitcoin");
-                    $('#form-payment').submit();
-                }
+                } 
             });
         });
     </script>
@@ -169,9 +166,6 @@
                     </li>
                     <li>
                         <a href="#bank-payment" data-toggle="tab">Pago en banco</a>
-                    </li>
-                    <li>
-                        <a href="#bitcoin-payment" data-toggle="tab">Pago con Bitcoin</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -269,16 +263,6 @@
                                 Puedes realizar tu pago a través de tu banca electrónica mediante un SPEI
                                 <div class="row">
                                     <img class="img-default center-block" src="http://www.banxico.org.mx/sistemas-de-pago/servicios/sistema-de-pagos-electronicos-interbancarios-spei/images/SPEI.jpg">
-                                </div>
-                            </div>
-                        </div>
-                     </div>
-                    <div class="tab-pane" id="bitcoin-payment">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                Puedes realizar tu pago mediante un monedero de Bitcoin
-                                <div class="row">
-                                    <img class="img-default center-block" src="img/bitcoin_logo_sm.png">
                                 </div>
                             </div>
                         </div>
