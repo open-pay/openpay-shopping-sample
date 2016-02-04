@@ -29,7 +29,6 @@ public class PaymentServlet extends HttpServlet {
         String apiPath = "https://sandbox-api.openpay.mx/";
         String secureKey = "sk_e568c42a6c384b7ab02cd47d2e407cab";
         String dashboardPath = "https://sandbox-dashboard.openpay.mx/";
-        
         OpenpayAPI openpayAPI = new OpenpayAPI(apiPath, secureKey, merchantId);
 
         ServletContext context = request.getSession().getServletContext();
