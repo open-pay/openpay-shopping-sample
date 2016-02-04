@@ -26,8 +26,11 @@ public class PaymentServlet extends HttpServlet {
             IOException {
         System.out.println(request.getParameterMap());
         String merchantId = "mzdtln0bmtms6o3kck8f";
-        OpenpayAPI openpayAPI = new OpenpayAPI("https://sandbox-api.openpay.mx/", "sk_e568c42a6c384b7ab02cd47d2e407cab",
-                merchantId);
+        String apiPath = "https://sandbox-api.openpay.mx/";
+        String secureKey = "sk_e568c42a6c384b7ab02cd47d2e407cab";
+        String dashboardPath = "https://sandbox-dashboard.openpay.mx/";
+        
+        OpenpayAPI openpayAPI = new OpenpayAPI(apiPath, secureKey, merchantId);
 
         ServletContext context = request.getSession().getServletContext();
 
@@ -86,6 +89,7 @@ public class PaymentServlet extends HttpServlet {
             request.getSession().setAttribute("customer", customer);
             request.getSession().setAttribute("product", product);
             request.getSession().setAttribute("merchantId", merchantId);
+            request.getSession().setAttribute("dashboardPath", dashboardPath);
         } catch (OpenpayServiceException e) {
             throw new ServletException(e.getMessage(), e);
         } catch (mx.openpay.client.exceptions.ServiceUnavailableException e) {
