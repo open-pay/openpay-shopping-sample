@@ -35,10 +35,25 @@
         Product product = (Product) request.getSession().getAttribute("product");
         Charge charge = (Charge) request.getSession().getAttribute("charge");
         Customer customer = (Customer) request.getSession().getAttribute("customer");
+        String merchantId = (String) request.getSession().getAttribute("merchantId");
+        String dashboardPath = (String) request.getSession().getAttribute("dashboardPath");
     %>
     
     <script type="text/javascript">
         $(document).ready(function () {
+        	var urlpdf;
+        	
+            <% if (charge.getMethod().equals("bank_account")) {%>
+            //PATH DE GENERACION DE PDF DE PAGO EN BANCOS "/spei-pdf/{merchantId}/{transactionId}"
+            urlpdf = "<%=dashboardPath%>spei-pdf/<%=merchantId%>/<%=charge.getId()%>";
+            <% }else if (charge.getMethod().equals("store")) {%>
+          //PATH DE GENERACION DE PDF DE PAGO EN TIENDAS "/paynet-pdf/{merchantId}/{reference}"
+            urlpdf = "<%=dashboardPath%>paynet-pdf/<%=merchantId%>/<%=charge.getPaymentMethod().getReference()%>";
+            <% }%>
+            
+            $(".btn-success").attr("href", urlpdf);
+            $(".btn-success").attr("target", "_blank");
+
         	OpenPayBitcoin.setId("${merchantId}");
         	OpenPayBitcoin.setSandboxMode(true);
 			var transactionId =  '<%= charge.getId() %>';
@@ -242,7 +257,10 @@
                                      src="https://s3.amazonaws.com/images.openpay/Horizontal_1.gif" style="width: 480px"/>
 
                                 <p></p>
-                                <button type="button" class="btn btn-success center-block">Imprimir</button>
+                                <a href="" class="btn btn-success center-block" target="_blank" style="width: 80px">
+                                        Imprimir
+                                </a>
+                                
                             <% } %>
 
                             <% if (charge.getMethod().equals("bank_account")) {%>
@@ -309,6 +327,9 @@
                                         Guarda tu comprobante de pago
                                     </li>
                                 </ol>
+                                <a href="" class="btn btn-success center-block" target="_blank" style="width: 80px">
+                                        Imprimir
+                                </a>
                             <% } %>
                             
                               <% if (charge.getMethod().equals("bitcoin")) {%>
