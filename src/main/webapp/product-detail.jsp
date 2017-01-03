@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="mx.openpay.samples.shopping.Product" %>
 <%@ page import="mx.openpay.samples.shopping.ProductBusiness" %>
 <!DOCTYPE html>
@@ -18,6 +19,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
     <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+	<script type="text/javascript" src="https://sandbox.static.masterpass.com/dyn/js/switch/integration/MasterPass.client.js"></script>
+	<script type="text/javascript" src="js/openpay-masterpass.js"></script>
+    
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-select.min.js"></script>
@@ -35,8 +39,9 @@
             OpenPay.setId('mzdtln0bmtms6o3kck8f');
             OpenPay.setApiKey('pk_f0660ad5a39f4912872e24a7a660370c');
             OpenPay.setSandboxMode(true);
+			
             var deviceSessionId = OpenPay.deviceData.setup("form-payment", "device_id");
-
+            
             $("#card-error").hide();
 
             var success_callbak = function (response) {
@@ -70,6 +75,11 @@
                 event.preventDefault();
                 $("#card-error").hide();
                 $("#btn-payment").prop("disabled", true);
+                var token = $('#token_id').val(token_id);
+                if (token !== null && token !== '') {
+                	$('#form-payment').submit();
+                	return;
+                }
                 var cardClassValue = $("#card-payment").attr("class");
                 var storeClassValue = $("#store-payment").attr("class");
                 var bankClassValue = $("#bank-payment").attr("class");
@@ -156,6 +166,40 @@
                     </div>
                 </div>
             </div>
+            <div class="panel panel-default" id="addressBlock" style="display: none;">
+                <div class="panel-heading">Direccion de contacto</div>
+                <div class="panel-body">
+	                <div class="row form-group">
+						  <div class=" col-md-6">
+		                        <input type="text" class="form-control col-md-6" id="line1" placeholder="Calle"/>
+						  </div>
+						  <div class="col-md-6">
+		                        <input type="text" class="form-control col-md-6" id="line2" placeholder="Interior"/>
+						  </div>
+					</div>
+	                <div class="row form-group">
+						  <div class="col-md-6">
+		                        <input type="text" class="form-control col-md-6" id="line3" placeholder="Colonia"/>
+						  </div>
+						  <div class="col-md-6">
+		                        <input type="text" class="form-control col-md-6" id="city" placeholder="Municipio"/>
+						  </div>
+					</div>
+	                <div class="row form-group">
+						  <div class="col-md-6">
+		                        <input type="text" class="form-control col-md-6" id="state" placeholder="Estado"/>
+						  </div>
+						  <div class="col-md-6">
+		                        <input type="text" class="form-control col-md-6" id="postalCode" placeholder="C.P."/>
+						  </div>
+					</div>
+	                <div class="row form-group">
+						  <div class="col-md-6">
+                        		<input type="text" class="form-control col-md-6" id="country" placeholder="Pais"/>
+						  </div>
+					</div>
+                </div>
+            </div>
             <div class="tabbable" id="tabs-154879">
                 <ul class="nav nav-tabs">
                     <li class="active">
@@ -173,12 +217,12 @@
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <input type="input" class="form-control" autocomplete="off"
+                                    <input type="input" id="holder_name" class="form-control" autocomplete="off"
                                            data-openpay-card="holder_name" placeholder="Nombre completo"/>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-xs-8">
-                                        <input type="phone" class="form-control" autocomplete="off"
+                                        <input id="card_number" type="phone" class="form-control" autocomplete="off"
                                                data-openpay-card="card_number" placeholder="Número de tarjeta"/>
                                     </div>
                                     <div class="form-group col-xs-4">
@@ -190,7 +234,7 @@
                                 <div class="row">
                                     <div class="form-group col-xs-8">
                                         <p>Mes de expiración</p>
-                                        <select class="selectpicker form-control"
+                                        <select id="expiration_month" class="selectpicker form-control"
                                                 data-openpay-card="expiration_month">
                                             <option value="01">01 Enero</option>
                                             <option value="02">02 Febrero</option>
@@ -208,18 +252,36 @@
                                     </div>
                                     <div class="form-group col-xs-4">
                                         <p>Año de expiración</p>
-                                        <select class="selectpicker form-control"
+                                        <select id="expiration_year" class="selectpicker form-control"
                                                 data-openpay-card="expiration_year">
-                                            <option>14</option>
-                                            <option>15</option>
-                                            <option>16</option>
                                             <option>17</option>
                                             <option>18</option>
+                                            <option>19</option>
+                                            <option>20</option>
+                                            <option>21</option>
+                                            <option>22</option>
+                                            <option>23</option>
+                                            <option>24</option>
+                                            <option>25</option>
+                                            <option>26</option>
+                                            <option>27</option>
+                                            <option>28</option>
+                                            <option>29</option>
+                                            <option>30</option>
+                                            <option>31</option>
+                                            <option>32</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="alert alert-danger" id="card-error"></div>
-                            </div>
+									<div class="alert alert-danger" id="card-error"></div>
+									<div class="pull-right" style="margin-right: 4px;">
+										<div class="MasterPassBtnExample">
+											<a href="/exampleRedirect"> <img
+												src="https://www.mastercard.com/mc_us/wallet/img/en/US/mcpp_wllt_btn_chk_180x042px.png">
+											</a>
+										</div>
+									</div>
+								</div>
                         </div>
                     </div>
                     <div class="tab-pane" id="store-payment">
@@ -262,7 +324,7 @@
                             <div class="panel-body">
                                 Puedes realizar tu pago a través de tu banca electrónica mediante un SPEI
                                 <div class="row">
-                                    <img class="img-default center-block" src="http://www.banxico.org.mx/sistemas-de-pago/servicios/sistema-de-pagos-electronicos-interbancarios-spei/images/SPEI.jpg">
+                                    <img class="img-default center-block" src="http://www.openpay.mx/img/costos/bancos.png">
                                 </div>
                             </div>
                         </div>
@@ -275,6 +337,82 @@
         </form>
     </div>
 </div>
+ <script type="text/javascript">
+        $(document).ready(function () {//master pass example
+            OpenPay.setId('mzdtln0bmtms6o3kck8f');
+            OpenPay.setApiKey('pk_f0660ad5a39f4912872e24a7a660370c');
+            OpenPay.setSandboxMode(true);
+            
+        	var successGetCheckoutCallback = function(response) {
+				var data = response.data;
+				console.log('DATA:');
+				console.log(data);
+				$("#token_id").val(data.id);
+				
+				var card = data.card;
+				console.log(data.card);
+				$("#holder_name").val(card.holder_name);
+				$("#card_number").val(card.card_number);
+				$("#expiration_month").val(card.expiration_month);
+				$("#expiration_year").val(card.expiration_year);
+				
+				var customer = data.customer;
+				$("#name").val(customer.name + " " + customer.last_name);
+				$("#email").val(customer.email);
+				$("#phone").val(customer.phone_number);
+				
+				var sa = data.shipping_address;
+				if (sa) {
+					$("#postalCode").val(sa.postal_code);
+					$("#country").val(sa.country_code);
+					$("#line1").val(sa.line1);
+					$("#line2").val(sa.line2);
+					$("#line3").val(sa.line3);
+					$("#state").val(sa.state);
+					$("#city").val(sa.city);
+				}
+				$('#addressBlock').show();
+			};
+			
+			var successConfigureButtonCallback = function(response) {
+				OpenpayMasterpass.getCheckoutData(response, successGetCheckoutCallback, doLog);
+			};
+
+		//	<c:if test="${param['redirect']}">
+				OpenpayMasterpass.getCheckoutData({//This block works when is redirected from masterpass
+					checkout_resource_url : '${param.checkout_resource_url}',
+					oauth_verifier : '${param.oauth_verifier}',
+					oauth_token : '${param.oauth_token}'
+				}, successGetCheckoutCallback, doLog);
+			//</c:if>
+			
+			var doLog = function(data) {
+				console.log(data);
+			}
+			
+			OpenpayMasterpass.configureButton(".MasterPassBtnExample a", {
+				originUrl : 'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true',// comment this line to do redirect to masterpass
+				callbackUrl : 'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true',
+				enableShippingAddress : true,
+				successCallback : successConfigureButtonCallback,
+				failureCallback : doLog,
+				cancelCallback : doLog,
+				shoppingCart : {
+					currency: "MXN",
+					subtotal: "<%=product.getPrice()%>".replace('$','').replace(',',''),
+					items: [
+						{
+							description : "<%=product.getName()%>",
+							quantity : 1,
+							value : "<%=product.getPrice()%>".replace('$','').replace(',',''),
+						//	imageUrl : "product image url"
+						}
+					]
+				}
+			});
+        });
+    </script>
+
 <jsp:include page="footer.jsp"/>
 </body>
 </html>
