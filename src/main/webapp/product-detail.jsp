@@ -19,7 +19,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
     <script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+    
+	<!-- Masterpasss Scripts-->
+	<!-- Masterpasss Sandbox client (requires JQuery)-->
 	<script type="text/javascript" src="https://sandbox.static.masterpass.com/dyn/js/switch/integration/MasterPass.client.js"></script>
+	
+	<!-- Masterpasss Production client-->
+	<!-- <script type="text/javascript" src="https://static.masterpass.com/dyn/js/switch/integration/MasterPass.client.js"></script> -->
+	<!-- Openpay-Masterpass plugin-->
 	<script type="text/javascript" src="js/openpay-masterpass.js"></script>
     
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -75,7 +82,7 @@
                 event.preventDefault();
                 $("#card-error").hide();
                 $("#btn-payment").prop("disabled", true);
-                var token = $('#token_id').val(token_id);
+                var token = $('#token_id').val();
                 if (token !== null && token !== '') {
                 	$('#form-payment').submit();
                 	return;
@@ -337,81 +344,38 @@
         </form>
     </div>
 </div>
- <script type="text/javascript">
-        $(document).ready(function () {//master pass example
-            OpenPay.setId('mzdtln0bmtms6o3kck8f');
-            OpenPay.setApiKey('pk_f0660ad5a39f4912872e24a7a660370c');
-            OpenPay.setSandboxMode(true);
-            
-        	var successGetCheckoutCallback = function(response) {
-				var data = response.data;
-				console.log('DATA:');
-				console.log(data);
-				$("#token_id").val(data.id);
-				
-				var card = data.card;
-				console.log(data.card);
-				$("#holder_name").val(card.holder_name);
-				$("#card_number").val(card.card_number);
-				$("#expiration_month").val(card.expiration_month);
-				$("#expiration_year").val(card.expiration_year);
-				
-				var customer = data.customer;
-				$("#name").val(customer.name + " " + customer.last_name);
-				$("#email").val(customer.email);
-				$("#phone").val(customer.phone_number);
-				
-				var sa = data.shipping_address;
-				if (sa) {
-					$("#postalCode").val(sa.postal_code);
-					$("#country").val(sa.country_code);
-					$("#line1").val(sa.line1);
-					$("#line2").val(sa.line2);
-					$("#line3").val(sa.line3);
-					$("#state").val(sa.state);
-					$("#city").val(sa.city);
-				}
-				$('#addressBlock').show();
-			};
-			
-			var successConfigureButtonCallback = function(response) {
-				OpenpayMasterpass.getCheckoutData(response, successGetCheckoutCallback, doLog);
-			};
 
-		//	<c:if test="${param['redirect']}">
-				OpenpayMasterpass.getCheckoutData({//This block works when is redirected from masterpass
-					checkout_resource_url : '${param.checkout_resource_url}',
-					oauth_verifier : '${param.oauth_verifier}',
-					oauth_token : '${param.oauth_token}'
-				}, successGetCheckoutCallback, doLog);
-			//</c:if>
-			
-			var doLog = function(data) {
-				console.log(data);
-			}
-			
-			OpenpayMasterpass.configureButton(".MasterPassBtnExample a", {
-				originUrl : 'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true',// comment this line to do redirect to masterpass
-				callbackUrl : 'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true',
-				enableShippingAddress : true,
-				successCallback : successConfigureButtonCallback,
-				failureCallback : doLog,
-				cancelCallback : doLog,
-				shoppingCart : {
-					currency: "MXN",
-					subtotal: "<%=product.getPrice()%>".replace('$','').replace(',',''),
-					items: [
-						{
-							description : "<%=product.getName()%>",
-							quantity : 1,
-							value : "<%=product.getPrice()%>".replace('$','').replace(',',''),
-						//	imageUrl : "product image url"
-						}
-					]
-				}
-			});
-        });
-    </script>
+ <script type="text/javascript">
+ //variables para usar masterpass
+ var globalOriginalUrl = 'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true';
+ var globalCallbackUrl =  'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true';
+ var prod = {
+		price : "<%=product.getPrice()%>".replace('$','').replace(',',''),
+		name : "<%=product.getName()%>"
+ };
+</script>
+
+<!-- Openpay-masterpass plugin integration sample -->
+<script type="text/javascript" src="js/masterpass-integration.js"></script>
+
+<!-- Example of handling the masterpass response in the redirect flow -->
+<c:if test="${param['redirect']}">
+	<script type="text/javascript"> //This block is executed when user is redirected from masterpass
+      $(document).ready(function () {//master pass example
+    	var masterpassResponse = {
+			checkout_resource_url : '${param.checkout_resource_url}',
+			oauth_verifier : '${param.oauth_verifier}',
+			oauth_token : '${param.oauth_token}',
+			mpstatus : '${param.mpstatus}'
+		};
+		OpenpayMasterpass.getCheckoutData(
+			masterpassResponse, //masterpass response
+			fillInfoWithMasterpassResponse, //success callback method
+			logFailure //Failure callback method
+		);
+      });
+	</script>
+</c:if>
 
 <jsp:include page="footer.jsp"/>
 </body>

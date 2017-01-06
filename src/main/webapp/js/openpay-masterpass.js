@@ -13,7 +13,8 @@ var OpenpayMasterpass = (function() {
 		var data = {
 			checkoutResourceUrl : response.checkout_resource_url,
 			oauthToken : response.oauth_token,
-			oauthVerifier : response.oauth_verifier
+			oauthVerifier : response.oauth_verifier,
+			mpstatus : response.mpstatus
 		};
 		OpenPay.send('masterpass/checkout', data, successCallback, failureCallback);
 	}
