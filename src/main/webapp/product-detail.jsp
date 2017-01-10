@@ -347,8 +347,8 @@
 
  <script type="text/javascript">
  //variables para usar masterpass
- var globalOriginalUrl = 'http://demo.openpay.mx/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true';
- var globalCallbackUrl =  'http://demo.openpay.mx/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true';
+ var globalOriginalUrl = 'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true';
+ var globalCallbackUrl =  'https://localhost:8443/openpay-shopping-sample/product-detail.jsp?id=<%=request.getParameter("id")%>&redirect=true';
  var prod = {
 		price : "<%=product.getPrice()%>".replace('$','').replace(',',''),
 		name : "<%=product.getName()%>"

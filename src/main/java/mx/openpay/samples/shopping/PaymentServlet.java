@@ -90,9 +90,13 @@ public class PaymentServlet extends HttpServlet {
             request.getSession().setAttribute("merchantId", merchantId);
             request.getSession().setAttribute("dashboardPath", dashboardPath);
         } catch (OpenpayServiceException e) {
-            throw new ServletException(e.getMessage(), e);
+            request.getSession().setAttribute("error", e.getDescription());
+            response.sendRedirect("error.jsp");
+            return;
         } catch (mx.openpay.client.exceptions.ServiceUnavailableException e) {
-            throw new ServletException(e.getMessage(), e);
+            request.getSession().setAttribute("error", e.getMessage());
+            response.sendRedirect("error.jsp");
+            return;
         }
         response.sendRedirect("confirmation.jsp");
     }
