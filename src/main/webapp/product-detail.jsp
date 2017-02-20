@@ -61,12 +61,12 @@
                 }
             };
             
-            $("#yesCardPoints").on('click', function(){
+            $("#yesCardPoints").on('click', function() {
             	$('#use_card_points').val('true');
             	$('#form-payment').submit();
             });
             
-            $("#noCardPoints").on('click', function(){
+            $("#noCardPoints").on('click', function() {
             	$('#use_card_points').val('false');
             	$('#form-payment').submit();
             });
@@ -96,11 +96,73 @@
                 } else if (storeClassValue.indexOf("active") >= 0) {
                     $('#payment_type').val("store");
                     $('#form-payment').submit();
-                } else if(bankClassValue.indexOf("active") >= 0){
+                } else if(bankClassValue.indexOf("active") >= 0) {
                     $('#payment_type').val("bank");
                     $('#form-payment').submit();
                 } 
             });
+            
+			$("#masterpassTab").click(function() {
+				isMasterpass = true;
+				setCardFields();
+				if (massterpassResponse != null) {
+					fillInfoWithMasterpassResponse(massterpassResponse);
+				} else {
+					cleanFields();
+				}
+			});
+			
+			$("#cardTab").click(function() {
+				isMasterpass = false;
+				setCardFields();
+				cleanFields();
+				$("#addressBlock").hide();
+			});
+			
+			function cleanFields() {
+				var fields = [
+					"token_id",
+					"holder_name",
+					"card_number",
+					"cvv2"
+					];
+				for (x in fields) {
+					$("#"+fields[x]).val('');
+				}
+				var selects = [
+					"expiration_month",
+					"expiration_year"
+					];
+				for (x in selects) {
+					$("#"+selects[x]+' option')[0].selected = true;
+				}
+			}
+			
+			var isMasterpass = false;
+			function setCardFields() {
+				var disabledFields = ["holder_name","card_number","expiration_month","expiration_year"];
+				for (x in disabledFields) {
+					$("#"+disabledFields[x]).prop('disabled', isMasterpass);
+				}
+				
+				var showFields = ["divMasterpass"];
+				for (x in showFields) {
+					if (isMasterpass) {
+						$("#"+showFields[x]).show();
+					} else {
+						$("#"+showFields[x]).hide();
+					}
+				}
+				
+				var hiddenFields = ["cvv2"];
+				for (x in hiddenFields) {
+					if (isMasterpass) {
+						$("#"+hiddenFields[x]).hide();
+					} else {
+						$("#"+hiddenFields[x]).show();
+					}
+				}
+			}
         });
     </script>
 
@@ -178,31 +240,31 @@
                 <div class="panel-body">
 	                <div class="row form-group">
 						  <div class=" col-md-6">
-		                        <input type="text" class="form-control col-md-6" id="line1" placeholder="Calle"/>
+		                        <input type="text" class="form-control col-md-6" id="line1" disabled="disabled" placeholder="Calle"/>
 						  </div>
 						  <div class="col-md-6">
-		                        <input type="text" class="form-control col-md-6" id="line2" placeholder="Interior"/>
-						  </div>
-					</div>
-	                <div class="row form-group">
-						  <div class="col-md-6">
-		                        <input type="text" class="form-control col-md-6" id="line3" placeholder="Colonia"/>
-						  </div>
-						  <div class="col-md-6">
-		                        <input type="text" class="form-control col-md-6" id="city" placeholder="Municipio"/>
+		                        <input type="text" class="form-control col-md-6" id="line2" disabled="disabled" placeholder="Interior"/>
 						  </div>
 					</div>
 	                <div class="row form-group">
 						  <div class="col-md-6">
-		                        <input type="text" class="form-control col-md-6" id="state" placeholder="Estado"/>
+		                        <input type="text" class="form-control col-md-6" id="line3" disabled="disabled" placeholder="Colonia"/>
 						  </div>
 						  <div class="col-md-6">
-		                        <input type="text" class="form-control col-md-6" id="postalCode" placeholder="C.P."/>
+		                        <input type="text" class="form-control col-md-6" id="city" disabled="disabled" placeholder="Municipio"/>
 						  </div>
 					</div>
 	                <div class="row form-group">
 						  <div class="col-md-6">
-                        		<input type="text" class="form-control col-md-6" id="country" placeholder="Pais"/>
+		                        <input type="text" class="form-control col-md-6" id="state" disabled="disabled" placeholder="Estado"/>
+						  </div>
+						  <div class="col-md-6">
+		                        <input type="text" class="form-control col-md-6" id="postalCode" disabled="disabled" placeholder="C.P."/>
+						  </div>
+					</div>
+	                <div class="row form-group">
+						  <div class="col-md-6">
+                        		<input type="text" class="form-control col-md-6" id="country" disabled="disabled" placeholder="Pais"/>
 						  </div>
 					</div>
                 </div>
@@ -210,7 +272,10 @@
             <div class="tabbable" id="tabs-154879">
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a href="#card-payment" data-toggle="tab">Pago con tarjeta</a>
+                        <a id="cardTab" href="#card-payment" data-toggle="tab">Pago con tarjeta</a>
+                    </li>
+                    <li>
+                        <a id="masterpassTab" href="#card-payment" data-toggle="tab">Masterpass</a>
                     </li>
                     <li>
                         <a href="#store-payment" data-toggle="tab">Pago en tienda</a>
@@ -233,7 +298,7 @@
                                                data-openpay-card="card_number" placeholder="Número de tarjeta"/>
                                     </div>
                                     <div class="form-group col-xs-4">
-                                        <input type="password" class="form-control" autocomplete="off"
+                                        <input type="password" class="form-control" autocomplete="off" id="cvv2"
                                                data-openpay-card="cvv2" placeholder="CVV2"/>
                                     </div>
                                 </div>
@@ -281,7 +346,7 @@
                                     </div>
                                 </div>
 									<div class="alert alert-danger" id="card-error"></div>
-									<div class="pull-right" style="margin-right: 4px;">
+									<div id="divMasterpass" class="pull-right" style="margin-right: 4px;display: none;">
 										<div class="MasterPassBtnExample">
 											<a href="/exampleRedirect"> <img
 												src="https://www.mastercard.com/mc_us/wallet/img/en/US/mcpp_wllt_btn_chk_180x042px.png">
@@ -361,19 +426,22 @@
 <!-- Example of handling the masterpass response in the redirect flow -->
 <c:if test="${param['redirect']}">
 	<script type="text/javascript"> //This block is executed when user is redirected from masterpass
-      $(document).ready(function () {//master pass example
-    	var masterpassResponse = {
-			checkout_resource_url : '${param.checkout_resource_url}',
-			oauth_verifier : '${param.oauth_verifier}',
-			oauth_token : '${param.oauth_token}',
-			mpstatus : '${param.mpstatus}'
-		};
-		OpenpayMasterpass.getCheckoutData(
-			masterpassResponse, //masterpass response
-			fillInfoWithMasterpassResponse, //success callback method
-			logFailure //Failure callback method
-		);
-      });
+      $(document).ready(function() {//master pass example
+    	  	$("#masterpassTab").trigger("click");
+      
+			var masterpassResponse = {
+				checkout_resource_url : '${param.checkout_resource_url}',
+				oauth_verifier : '${param.oauth_verifier}',
+				oauth_token : '${param.oauth_token}',
+				mpstatus : '${param.mpstatus}'
+			};
+      		
+			OpenpayMasterpass.getCheckoutData(
+					masterpassResponse, //masterpass response
+					fillInfoWithMasterpassResponse, //success callback method
+					logFailure //Failure callback method
+			);
+		});
 	</script>
 </c:if>
 

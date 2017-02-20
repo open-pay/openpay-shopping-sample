@@ -1,4 +1,7 @@
+var massterpassResponse = null;
+
 var fillInfoWithMasterpassResponse = function(response) {
+	massterpassResponse = response;
 	var data = response.data;
 	console.log('Masterpass response:');
 	console.log(data);
