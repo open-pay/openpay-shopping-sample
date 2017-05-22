@@ -346,12 +346,13 @@
                                     </div>
                                 </div>
 									<div class="alert alert-danger" id="card-error"></div>
-									<div id="divMasterpass" class="pull-right" style="margin-right: 4px;display: none;">
+									<div id="divMasterpass" class="pull-right" style="margin-right: 4px;display: none; text-align: center;">
 										<div class="MasterPassBtnExample">
 											<a href="/exampleRedirect"> <img
 												src="https://www.mastercard.com/mc_us/wallet/img/en/US/mcpp_wllt_btn_chk_180x042px.png">
 											</a>
 										</div>
+										<a href="http://www.openpay.mx/docs/masterpass.html">Learn More</a>
 									</div>
 								</div>
                         </div>
