@@ -352,7 +352,7 @@
 												src="https://www.mastercard.com/mc_us/wallet/img/en/US/mcpp_wllt_btn_chk_180x042px.png">
 											</a>
 										</div>
-										<a href="http://www.openpay.mx/docs/masterpass.html">Learn More</a>
+										<a href="https://www.mastercard.com/mc_us/wallet/learnmore/es/MX/">Learn More</a>
 									</div>
 								</div>
                         </div>
