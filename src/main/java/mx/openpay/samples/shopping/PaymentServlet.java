@@ -2,6 +2,8 @@ package mx.openpay.samples.shopping;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -42,13 +44,22 @@ public class PaymentServlet extends HttpServlet {
         String paymentTypme = request.getParameter("payment_type");
         String tokenId = request.getParameter("token_id");
         String deviceId = request.getParameter("device_id");
+        String comment = request.getParameter("comment");
         boolean useCardPoints = Boolean.parseBoolean(request.getParameter("use_card_points"));
 
         Product product = ProductBusiness.getById(context.getRealPath("/"), idProduct);
         String amountString = product.getPrice().replace(",", "").replace("$", "");
         String description = product.getName();
         BigDecimal amount = new BigDecimal(amountString);
-
+        Map<String, String> metadata = null;
+        if(comment != null && !comment.trim().isEmpty()){
+            comment = comment.trim();
+            if(comment.length() > 64){
+                comment = comment.substring(0, 61) + "...";
+            }
+            metadata = new HashMap<>();
+            metadata.put("user_comment", comment);
+        }
         try {
             Customer customer = openpayAPI.customers().create(new Customer()
                     .name(customerName)
@@ -66,7 +77,8 @@ public class PaymentServlet extends HttpServlet {
                             .amount(amount)
                             .description(description)
                             .deviceSessionId(deviceId)
-                            .useCardPoints(useCardPoints);
+                            .useCardPoints(useCardPoints)
+                            .metadata(metadata);
                     charge = openpayAPI.charges().create(customer.getId(), cardChargeParams);
                     break;
                 case "store":

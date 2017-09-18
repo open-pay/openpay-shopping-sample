@@ -171,6 +171,9 @@
                         <input type="email" class="form-control" id="email" name="email"
                                placeholder="Correo Electrónico"/>
                     </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="comment" name="comment" placeholder="Comentarios" maxlength="64"/>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default" id="addressBlock" style="display: none;">
