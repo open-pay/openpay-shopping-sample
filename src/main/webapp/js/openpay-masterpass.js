@@ -26,7 +26,7 @@ var OpenpayMasterpass = (function() {
 			'shoppingCart' : opts.shoppingCart
 		};
 		checkoutRequest.opts = opts;
-		OpenPay.send('masterpass/config', data, checkoutRequest.doCheckout, failureCallback);
+		OpenPay.send('masterpass/config', data, checkoutRequest.doCheckout, opts.failureCallback);
 	}
 	
 	checkoutRequest.doCheckout = function(response){
@@ -51,10 +51,6 @@ var OpenpayMasterpass = (function() {
 			"cancelCallback" : opts.cancelCallback,
 			"successCallback" : opts.successCallback
 		});
-	}
-
-	function failureCallback(response) {
-		console.log(response);
 	}
 
 	return obj;
