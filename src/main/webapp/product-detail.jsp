@@ -233,9 +233,6 @@
                         <input type="email" class="form-control" id="email" name="email"
                                placeholder="Correo Electrónico"/>
                     </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="comment" name="comment" placeholder="Comentarios" maxlength="64"/>
-                    </div>
                 </div>
             </div>
             <div class="panel panel-default" id="addressBlock" style="display: none;">
@@ -348,6 +345,11 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="row">
+	                                <div class="form-group col-xs-12">
+				                        <input type="text" class="form-control" id="comment" name="comment" placeholder="Comentarios (Opcional)" maxlength="64"/>
+				                    </div>
+			                    </div>
 									<div class="alert alert-danger" id="card-error"></div>
 									<div id="divMasterpass" class="pull-right" style="margin-right: 4px;display: none; text-align: center;">
 										<div class="MasterPassBtnExample">
