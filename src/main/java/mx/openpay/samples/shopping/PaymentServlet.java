@@ -27,9 +27,9 @@ public class PaymentServlet extends HttpServlet {
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
             IOException {
         System.out.println(request.getParameterMap());
-        String merchantId = "mzdtln0bmtms6o3kck8f";
+        String merchantId = System.getProperty("MERCHANTID");
         String apiPath = "https://sandbox-api.openpay.mx/";
-        String secureKey = "sk_e568c42a6c384b7ab02cd47d2e407cab";
+        String secureKey = System.getProperty("APIKEY");
         String dashboardPath = "https://sandbox-dashboard.openpay.mx/";
         OpenpayAPI openpayAPI = new OpenpayAPI(apiPath, secureKey, merchantId);
 
